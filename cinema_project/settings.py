@@ -25,12 +25,20 @@ environ.Env.read_env(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-5arirq&=14vix^x28*%i+#^^xr-h5+--rw=3jv9ot%m+^sy&s7"
+SECRET_KEY = env(
+    "SECRET_KEY",
+    default="django-dev-secret-key"
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool(
+    "DEBUG",
+    default=True
+)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list(
+    "ALLOWED_HOSTS",
+    default=[]
+)
 
 
 # Application definition
@@ -63,7 +71,7 @@ ROOT_URLCONF = "cinema_project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -130,5 +138,12 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-TMDB_API_KEY = env("TMDB_API_KEY")
-TMDB_API_TOKEN = env("TMDB_API_TOKEN")
+TMDB_API_KEY = env(
+    "TMDB_API_KEY",
+    default=""
+)
+
+TMDB_API_TOKEN = env(
+    "TMDB_API_TOKEN",
+    default=""
+)
