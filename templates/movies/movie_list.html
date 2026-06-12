@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Repertuar</h1>
+
+  {# Wyszukiwarka #}
+  <form method="get">
+    <input name="q" value="{{ current_q }}" placeholder="Szukaj...">
+    <button type="submit">Szukaj</button>
+  </form>
+
+  {# Filtry gatunków #}
+  <a href="{% url 'movie-list' %}">Wszystkie</a>
+  {% for genre in genres %}
+    <a href="?q={{current_q}}&genre={{ genre.pk }}">{{ genre.name }}</a>
+  {% endfor %}
+
+  {# Karty filmów #}
+  {% for movie in movies %}
+    <div>
+      {% if movie.poster %}
+        <img src="{{ movie.poster.url }}" alt="{{ movie.title }}">
+      {% endif %}
+      <h2>
+        <a href="{% url 'movie-detail' movie.pk %}">{{ movie.title }}</a>
+      </h2>
+      <p>{{ movie.director }} | {{ movie.release_date|date:"Y" }}</p>
+      <p>Czas trwania: {{ movie.duration }} min</p>
+      <p>{{ movie.description|truncatewords:25 }}</p>
+      <p>⭐ {{ movie.vote_average }}</p>
+    </div>
+
+    {% empty %}
+    <p>Brak filmów spełniających podane kryteria</p>
+
+  {% endfor %}
+
+  {# Paginacja #}
+    {% if page_obj.has_previous %}
+    <a href="?{{ query_params.urlencode }}&page={{ page_obj.previous_page_number }}">
+        ← Poprzednia
+    </a>
+        {% endif %}
+
+    Strona {{ page_obj.number }} z {{ page_obj.paginator.num_pages }}
+
+    {% if page_obj.has_next %}
+    <a href="?{{ query_params.urlencode }}&page={{ page_obj.next_page_number }}">
+        Następna →
+    </a>
+    {% endif %}
+{% endblock %}
