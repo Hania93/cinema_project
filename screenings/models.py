@@ -37,9 +37,34 @@ class Seat(models.Model):
         
         db_table = "seats"
         
+    def clean(self):
+        if self.row < 1:
+            raise ValidationError(
+                "Numer rzędu musi być większy od 0."
+            )
+
+        if self.number < 1:
+            raise ValidationError(
+                "Numer miejsca musi być większy od 0."
+            )
+
+        if self.row > self.hall.rows:
+            raise ValidationError(
+                "Numer rzędu jest większy niż liczba rzędów w sali."
+            )
+
+        if self.number > self.hall.seats_per_row:
+            raise ValidationError(
+                "Numer miejsca jest większy niż liczba miejsc w rzędzie."
+            )
+        
     def __str__(self):
         return f"{self.hall} - rząd {self.row}, miejsce {self.number}"
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+    
 class Screening(models.Model):
     movie = models.ForeignKey(
         "movies.Movie",
