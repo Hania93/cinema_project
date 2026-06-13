@@ -32,7 +32,7 @@ class MovieListView(ListView):
         context["genres"] = Genre.objects.all()
 
         context["current_q"] = self.request.GET.get("q", "")
-        
+
         context["query_params"] = self.request.GET.copy()
         context["query_params"].pop("page", None)
 
@@ -49,12 +49,10 @@ class MovieDetailView(DetailView):
         return Movie.objects.select_related("director").prefetch_related(
             "genres", "movieactor_set__actor"
         )
-        
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["cast"] = (
-            self.object.movieactor_set
-            .select_related("actor")
-            .order_by("billing_order")
+        context["cast"] = self.object.movieactor_set.select_related("actor").order_by(
+            "billing_order"
         )
-        return context   
+        return context

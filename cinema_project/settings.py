@@ -25,20 +25,11 @@ environ.Env.read_env(BASE_DIR / ".env")
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env(
-    "SECRET_KEY",
-    default="django-dev-secret-key"
-)
+SECRET_KEY = env("SECRET_KEY", default="django-dev-secret-key")
 
-DEBUG = env.bool(
-    "DEBUG",
-    default=True
-)
+DEBUG = env.bool("DEBUG", default=True)
 
-ALLOWED_HOSTS = env.list(
-    "ALLOWED_HOSTS",
-    default=[]
-)
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
 
 # Application definition
@@ -138,12 +129,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-TMDB_API_KEY = env(
-    "TMDB_API_KEY",
-    default=""
-)
+TMDB_API_KEY = env("TMDB_API_KEY", default="")
 
-TMDB_API_TOKEN = env(
-    "TMDB_API_TOKEN",
-    default=""
-)
+TMDB_API_TOKEN = env("TMDB_API_TOKEN", default="")
