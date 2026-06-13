@@ -6,6 +6,12 @@ from django.db import models
 
 class Hall(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    rows = models.PositiveSmallIntegerField()
+    seats_per_row = models.PositiveSmallIntegerField()
+    
+    @property
+    def total_seats(self):
+        return self.rows * self.seats_per_row
     
     def __str__(self):
         return self.name    
