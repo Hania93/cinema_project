@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Repertuar</h1>
+
+  {% for date in dates %}
+    <a href="?date={{ date|date:'Y-m-d' }}">
+        <button
+            {% if current_date == date|date:'Y-m-d' %}
+            style="font-weight: bold;"
+            {% endif %}
+        >
+        {{ date|date:"d.m"}}
+        </button>
+    </a>
+  {% endfor %}
+
+  {# Karty filmów #}
+  {% for screening in screenings %}
+    <div>    
+    <p>Godzina: {{ screening.start_time|date:"H:i"}}        
+    </p>
+    <p>Sala: {{ screening.hall }}</p>
+      {% if screening.movie.poster %}
+        <img src="{{ screening.movie.poster.url }}" alt="{{ screening.movie.title }}">
+      {% endif %}
+      <h2>
+        <a href="{% url 'movie-detail' screening.movie.pk %}">{{ screening.movie.title }}</a>
+
+        <a href="{% url 'screening-detail' screening.pk %}">Szczegóły seansu</a>
+      </h2>
+      <p>{{ screening.movie.director }} | {{ screening.movie.release_date|date:"Y" }}</p>
+      <p>Czas trwania: {{ screening.movie.duration }} min</p>
+      <p>{{ screening.movie.description|truncatewords:25 }}</p>
+      <p>⭐ {{ screening.movie.vote_average }}</p>
+    </div>
+
+    {% empty %}
+    <p>Brak seansów w danym dniu</p>
+
+  {% endfor %}
+
+  
+{% endblock %}
