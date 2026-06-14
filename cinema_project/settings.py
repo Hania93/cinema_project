@@ -132,3 +132,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 TMDB_API_KEY = env("TMDB_API_KEY", default="")
 
 TMDB_API_TOKEN = env("TMDB_API_TOKEN", default="")
+
+LOGIN_REDIRECT_URL = "screening-list"
+LOGOUT_REDIRECT_URL = "screening-list"

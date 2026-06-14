@@ -1,0 +1,38 @@
+<nav>
+
+    <a href="{% url 'movie-list' %}">
+        Filmy
+    </a>
+
+    <a href="{% url 'screening-list' %}">
+        Repertuar
+    </a>
+
+    {% if user.is_authenticated %}
+
+        <span>
+            Witaj {{ user.username }}
+        </span>
+
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+            style="display:inline;"
+        >
+            {% csrf_token %}
+            <button type="submit">
+                Wyloguj
+            </button>
+        </form>
+
+    {% else %}
+
+        <a href="{% url 'login' %}">
+            Zaloguj
+        </a>
+
+    {% endif %}
+
+</nav>
+
+<hr>
