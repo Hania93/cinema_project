@@ -33,6 +33,7 @@
       <p>Czas trwania: {{ screening.movie.duration }} min</p>
       <p>{{ screening.movie.description|truncatewords:25 }}</p>
       <p>⭐ {{ screening.movie.vote_average }}</p>
+      <p>Cena biletu: {{ screening.price }} zł</p>
     </div>
 
     {% empty %}
