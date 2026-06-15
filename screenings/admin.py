@@ -29,10 +29,13 @@ class ScreeningAdmin(admin.ModelAdmin):
         "start_time",
         "end_time",
         "hall",
+        "price"
     )
 
     list_filter = ("movie", "start_time", "hall")
+    
+    list_editable = ["price"]
 
-    search_fields = ("movie__title",)
+    search_fields = ("movie__title", "hall__name")
 
     readonly_fields = ("end_time",)
