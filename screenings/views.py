@@ -3,8 +3,12 @@ from datetime import timedelta
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.views.generic import DetailView, ListView
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 
 from .models import Screening
+from reservations.models import Reservation, ReservationSeat
 
 
 class ScreeningListView(ListView):
@@ -19,7 +23,17 @@ class ScreeningListView(ListView):
             return selected_date
 
         return timezone.localdate()
+    
+    # def get_queryset(self):
+    #     selected_date = self.get_selected_date()
 
+    #     return (
+    #         Screening.objects
+    #         .select_related("movie", "hall")
+    #         .filter(start_time__date=selected_date)
+    #         .order_by("start_time")
+    #     )
+    
     def get_queryset(self):
         qs = Screening.objects.select_related(
             "movie",
@@ -47,7 +61,7 @@ class ScreeningListView(ListView):
         return context
 
 
-class ScreeningDetailView(DetailView):
+class ScreeningDetailView(LoginRequiredMixin, DetailView):
     model = Screening
     template_name = "screenings/screening_detail.html"
     context_object_name = "screening"
@@ -57,3 +71,49 @@ class ScreeningDetailView(DetailView):
             "movie",
             "hall",
         ).order_by("start_time")
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        seats = self.object.hall.seats.all().order_by("row", "number",)
+        
+        reserved_seat_ids = ReservationSeat.objects.filter(reservation__screening=self.object).values_list(
+            "seat_id",
+            flat=True,
+        )
+        context["seats"] = seats
+        context["reserved_seat_ids"] = set(reserved_seat_ids)
+        
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        
+        selected_seat_ids = request.POST.getlist("seats")
+        
+        if not selected_seat_ids:
+            messages.error(request, "Wybierz przynajmniej jedno miejsce.")            
+            return redirect("screening-detail", pk=self.object.pk)
+        
+        already_reserved = ReservationSeat.objects.filter(
+            reservation__screening=self.object,
+            seat_id__in=selected_seat_ids
+        ).exists()
+        
+        if already_reserved:
+            messages.error(request, "Jedno z wybranych miejsc jest już zajęte.")
+            return redirect("screening-detail", pk=self.object.pk)
+        
+        reservation = Reservation.objects.create(
+            user=request.user,
+            screening=self.object,
+        )
+        
+        for seat_id in selected_seat_ids:
+            ReservationSeat.objects.create(
+                reservation=reservation,
+                seat_id=seat_id,
+            )
+            
+        messages.success(request, "Rezerwacja została utworzona.")    
+        return redirect("screening-detail", pk=self.object.pk)

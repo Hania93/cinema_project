@@ -77,7 +77,8 @@ class Command(BaseCommand):
             )
 
             rand_screening = Screening(
-                hall=rand_hall, movie=rand_movie, start_time=start_time
+                hall=rand_hall, movie=rand_movie, start_time=start_time,
+                price=random.choice(["19.99", "24.99", "29.99"])
             )
 
             try:

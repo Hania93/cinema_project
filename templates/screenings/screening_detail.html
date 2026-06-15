@@ -33,13 +33,29 @@
 
 <h2>Wybór miejsc</h2>
 
-<p>
-    Tutaj później pojawi się mapa miejsc dla sali:
-    <strong>{{ screening.hall }}</strong>
-</p>
+<form method="post">
+    {% csrf_token %}
 
-<button disabled>
-    Rezerwacja miejsc — wkrótce
-</button>
+    {% for seat in seats %}
+    <label>
+        <input type="checkbox" name="seats" value="{{seat.id}}"
+        {% if seat.id in reserved_seat_ids %}
+            disabled
+        {% endif %}
+        />
+        
+        Sala: {{seat.hall}}, rząd: {{seat.row}}, miejsce: {{seat.number}}
+    
+        {% if seat.id in reserved_seat_ids %}
+            - zajęte
+        {% endif %}
+    </label>
+    
+    {% endfor %}
+
+    <br/>
+    <button type="submit">Rezerwuj</button>
+
+</form>
 
 {% endblock %}
