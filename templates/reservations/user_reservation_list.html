@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Moje rezerwacje</h1>
+
+{% for reservation in reservations %}
+<div>
+    <h2>{{ reservation.screening.movie.title }}</h2>
+
+    <p>
+        Data:
+        {{ reservation.screening.start_time|date:"d.m.Y" }}
+    </p>
+    <p>
+        Godzina:
+        {{ reservation.screening.start_time|time:"H:i"}}
+    </p>
+    <p>
+        Miejsca:
+        {% for reservation_seat in reservation.reserved_seats.all %}
+
+        Rząd {{ reservation_seat.seat.row }},
+        miejsce {{ reservation_seat.seat.number }}
+        {% if not forloop.last %}; {% endif %}
+            
+        {% endfor %}
+    </p>
+    <p>
+        Zarezerwowano:
+        {{ reservation.created_at|date:"d.m.Y" }}
+    </p>
+    <a href="{% url 'reservation-delete' reservation.pk %}">
+        Anuluj rezerwacje
+    </a>
+</div>
+
+<hr>
+
+{% empty %}
+    <p>Nie masz jeszcze żadnych rezerwacji.</p>
+{% endfor %}
+
+{% endblock %}

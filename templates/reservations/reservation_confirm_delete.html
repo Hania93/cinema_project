@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Anulować rezerwację?</h1>
+
+<p>
+    {{ object.screening.movie.title }}
+    -
+    {{ object.screening.start_time|date:"d.m.Y H:i"}}
+</p>
+
+<form method="post">
+    {% csrf_token %}
+
+    <button type="submit">
+        Tak, anuluj
+    </button>
+
+    <a href="{% url 'user-reservations' %}">
+        Nie, wróć
+    </a>
+</form>
+
+{% endblock %}
