@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+
 from screenings.models import Screening, Seat
 
 User = get_user_model()
@@ -19,13 +21,18 @@ class Reservation(models.Model):
     screening = models.ForeignKey(
         Screening,
         on_delete=models.CASCADE,
-        related_name="reserved_seats",
+        related_name="reservations",
     )
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default="confirmed"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     
+    @property
+    def total_cost(self):
+        return (
+            self.reserved_seats.count() * self.screening.price
+        )
     class Meta:
         ordering = ["-created_at"]
         
@@ -47,6 +54,16 @@ class ReservationSeat(models.Model):
         related_name="reservations",
     )
     
+    def clean(self):
+        if self.seat.hall != self.reservation.screening.hall:
+            raise ValidationError(
+                "To miejsce nie należy do sali tego seansu."
+            )
+            
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+        
     class Meta:
         ordering = ["reservation"]
         constraints = [

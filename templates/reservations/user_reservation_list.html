@@ -26,6 +26,10 @@
         {% endfor %}
     </p>
     <p>
+        Koszt:
+        {{ reservation.total_cost }} zł
+    </p>
+    <p>
         Zarezerwowano:
         {{ reservation.created_at|date:"d.m.Y" }}
     </p>

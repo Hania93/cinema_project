@@ -81,7 +81,9 @@ class Screening(models.Model):
     )
     
     price = models.DecimalField(
-        max_digits=6, decimal_places=2, default=20.00
+        max_digits=6, 
+        decimal_places=2, 
+        default=20.00
     ) 
 
     def set_end_time(self):
