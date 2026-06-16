@@ -67,3 +67,25 @@ body {
     background-color: #c19b2e;
     color: white;
 }
+
+
+
+.price-badge {
+    background-color: #198754;
+    color: white;
+}
+
+.screening-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.screening-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+.screening-poster {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
