@@ -2,59 +2,133 @@
 
 {% block content %}
 
-<a href="{% url 'screening-list' %}">← Wróć do repertuaru</a>
+<a href="{% url 'screening-list' %}" class="btn btn-outline-secondary mb-3">
+    ← Wróć do repertuaru
+</a>
 
-<h1>{{ screening.movie.title }}</h1>
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        {% if screening.movie.poster %}
+            <img
+                src="{{ screening.movie.poster.url }}"
+                alt="{{ screening.movie.title }}"
+                class="img-fluid rounded shadow-sm movie-poster"
+            >
+        {% endif %}
+    </div>
 
-<div>
-    {% if screening.movie.poster %}
-        <img
-            src="{{ screening.movie.poster.url }}"
-            alt="{{ screening.movie.title }}"
-            width="220"
-        >
-    {% endif %}
+    <div class="col-md-8">
+        <h1>{{ screening.movie.title }}</h1>
 
-    <div>
-        <p><strong>Data:</strong> {{ screening.start_time|date:"d.m.Y" }}</p>
-        <p><strong>Godzina:</strong> {{ screening.start_time|date:"H:i" }}</p>
-        <p><strong>Sala:</strong> {{ screening.hall }}</p>
-        <p><strong>Czas trwania:</strong> {{ screening.movie.duration }} min</p>
-        <p><strong>Reżyser:</strong> {{ screening.movie.director }}</p>
+        <p class="text-muted">
+            {{ screening.start_time|date:"d.m.Y" }} |
+            {{ screening.start_time|date:"H:i" }} |
+            {{ screening.movie.duration }} min
+        </p>
+
+        <p>
+            Sala: <strong>{{ screening.hall }}</strong>
+        </p>
+
+        <p>
+            Cena biletu: <strong>{{ screening.price }} zł</strong>
+        </p>
+
+        <p>
+            Reżyser: {{ screening.movie.director }}
+        </p>
+
+        <p class="lead">
+            {{ screening.movie.description }}
+        </p>
     </div>
 </div>
 
-<hr>
+<p>
+    Wolne miejsca:
+    <strong>{{ available_seats }}</strong>
+</p>
 
-<h2>Opis filmu</h2>
-<p>{{ screening.movie.description }}</p>
-<p>Cena biletu: {{ screening.price }} zł</p>
-<hr>
-
-<h2>Wybór miejsc</h2>
+<h2 class="mt-5 mb-3">Wybór miejsc</h2>
 
 <form method="post">
     {% csrf_token %}
 
-    {% for seat in seats %}
-    <label>
-        <input type="checkbox" name="seats" value="{{seat.id}}"
-        {% if seat.id in reserved_seat_ids %}
-            disabled
-        {% endif %}
-        />
-        
-        Sala: {{seat.hall}}, rząd: {{seat.row}}, miejsce: {{seat.number}}
-    
-        {% if seat.id in reserved_seat_ids %}
-            - zajęte
-        {% endif %}
-    </label>
-    
-    {% endfor %}
+    <div class="d-flex gap-3 mb-4 justify-content-center">
+    <span><span class="seat-box seat-free-example"></span> Wolne</span>
+    <span><span class="seat-box seat-selected-example"></span> Wybrane</span>
+    <span><span class="seat-box seat-reserved"></span> Zajęte</span>
+</div>
 
-    <br/>
-    <button type="submit">Rezerwuj</button>
+    <div class="screen mb-4">
+        EKRAN
+    </div>
+
+    <div class="seat-map-container mx-auto">
+    {% for row, row_seats in seats_by_row.items %}
+
+        <div class="mb-3 text-center">
+
+            <strong>Rząd {{ row }}</strong>
+
+            <div class="d-flex gap-2 mt-2 justify-content-center">
+
+                    {% for seat in row_seats %}
+
+                        <label class="seat-label">
+
+                            <input
+                                type="checkbox"
+                                name="seats"
+                                value="{{ seat.id }}"
+                                {% if seat.id in reserved_seat_ids %}
+                                    disabled
+                                {% endif %}
+                            >
+
+                            <span
+                                class="seat-box
+                                    {% if seat.id in reserved_seat_ids %}
+                                        seat-reserved
+                                    {% endif %}
+                                "
+                            >
+                                {{ seat.number }}
+                            </span>
+
+                        </label>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+    </div>
+   
+
+    <div class="card mt-4 mx-auto" style="max-width: 500px;">
+    <div class="card-body text-center">
+        <p class="mb-1">
+            Cena biletu:
+            <strong>{{ screening.price }} zł</strong>
+        </p>
+
+        <small class="text-muted">
+            Wybierz jedno lub więcej miejsc, a następnie kliknij rezerwuj.
+        </small>
+    </div>
+    </div>
+
+    <div class="text-center">
+    <button
+        type="submit"
+        class="btn cinema-btn mt-4"
+    >
+        Zarezerwuj wybrane miejsca
+    </button>
+</div>
 
 </form>
 
