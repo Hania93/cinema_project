@@ -6,6 +6,47 @@ body {
     background-color: #f8f9fa;
 }
 
+.cinema-navbar {
+    background-color: #111827;
+}
+
+.navbar-brand {
+    letter-spacing: 0.5px;
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar .nav-link:hover {
+    color: #d4af37;
+}
+
+.movie-card-poster {
+    height: 420px;
+    object-fit: cover;
+}
+.genre-movies-badge {
+    background-color: #111827;
+    color: white;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+}
+
+.genre-movies-badge:hover {
+    background-color: #1f2937;
+    color: white;
+}
+
+.genre-movies-badge-active {
+    background-color: #d4af37;
+    color: #111827;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.9rem;
+    border-radius: 0.5rem;
+}
+
 .rating-badge {
     background-color: #198754;
     color: white;

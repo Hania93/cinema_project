@@ -98,7 +98,7 @@ class ScreeningDetailView(LoginRequiredMixin, DetailView):
         context["reserved_seat_ids"] = set(reserved_seat_ids)
         available_seats = seats.count() - len(reserved_seat_ids)
         context["available_seats"] = available_seats
-        
+
         return context
 
     def post(self, request, *args, **kwargs):

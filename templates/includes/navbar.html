@@ -1,63 +1,44 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark cinema-navbar sticky-top">
     <div class="container">
 
-        <a class="navbar-brand" href="{% url 'movie-list' %}">
-            🎬 Cinema
+        <a class="navbar-brand fw-bold" href="{% url 'movie-list' %}">
+            🎬 KinoMania
         </a>
 
         <button
             class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
+            data-bs-target="#mainNavbar"
         >
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div
-            class="collapse navbar-collapse"
-            id="navbarNav"
-        >
+        <div class="collapse navbar-collapse" id="mainNavbar">
 
             <div class="navbar-nav me-auto">
-
-                <a
-                    class="nav-link"
-                    href="{% url 'movie-list' %}"
-                >
+                <a class="nav-link" href="{% url 'movie-list' %}">
                     Filmy
                 </a>
 
-                <a
-                    class="nav-link"
-                    href="{% url 'screening-list' %}"
-                >
+                <a class="nav-link" href="{% url 'screening-list' %}">
                     Repertuar
                 </a>
-
             </div>
 
-            <div class="navbar-nav align-items-center">
-
+            <div class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
                 {% if user.is_authenticated %}
 
-                    <a
-                        class="nav-link"
-                        href="{% url 'user-reservations' %}"
-                    >
+                    <a class="nav-link" href="{% url 'user-reservations' %}">
                         Moje rezerwacje
                     </a>
 
-                    <span class="navbar-text me-3">
-                        Witaj {{ user.username }}
+                    <span class="navbar-text small">
+                        Witaj, {{ user.username }}
                     </span>
 
-                    <form
-                        method="post"
-                        action="{% url 'logout' %}"
-                    >
+                    <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
-
                         <button
                             type="submit"
                             class="btn btn-outline-light btn-sm"
@@ -68,25 +49,20 @@
 
                 {% else %}
 
-                    <a
-                        class="nav-link"
-                        href="{% url 'login' %}"
-                    >
+                    <a class="nav-link" href="{% url 'login' %}">
                         Logowanie
                     </a>
 
                     <a
-                        class="nav-link"
+                        class="btn cinema-btn btn-sm ms-lg-2"
                         href="{% url 'register' %}"
                     >
                         Rejestracja
                     </a>
 
                 {% endif %}
-
             </div>
 
         </div>
-
     </div>
 </nav>

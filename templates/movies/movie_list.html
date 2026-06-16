@@ -1,56 +1,82 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>Wszystkie filmy</h1>
+    <h1>Baza filmów</h1>
 </div>
 
 <form method="get" class="row g-2 mb-4">
-    <div class="col-md-10">
+
+    <div class="col-md-8">
         <input
-            class="form-control"
+            type="text"
             name="q"
             value="{{ current_q }}"
+            class="form-control"
             placeholder="Szukaj filmu..."
         >
     </div>
-    <div class="col-md-2">
-        <button class="btn btn-primary w-100" type="submit">
+
+    <div class="col-md-4">
+        <button
+            type="submit"
+            class="btn cinema-btn w-100"
+        >
             Szukaj
         </button>
     </div>
+
 </form>
 
 <div class="mb-4">
     <a
-        class="btn btn-outline-secondary btn-sm mb-2"
-        href="{% url 'movie-list' %}"
-    >
-        Wszystkie
-    </a>
+    class="badge text-decoration-none mb-2 me-1
+        {% if not current_genre %}
+            genre-movies-badge-active
+        {% else %}
+            genre-movies-badge
+        {% endif %}
+    "
+    href="{% url 'movie-list' %}"
+>
+    Wszystkie
+</a>
 
-    {% for genre in genres %}
-        <a
-            class="btn btn-outline-primary btn-sm mb-2"
-            href="?q={{ current_q }}&genre={{ genre.pk }}"
-        >
-            {{ genre.name }}
-        </a>
-    {% endfor %}
+{% for genre in genres %}
+    <a
+        class="badge text-decoration-none mb-2 me-1
+            {% if current_genre == genre.pk|stringformat:'s' %}
+                genre-movies-badge-active
+            {% else %}
+                genre-movies-badge
+            {% endif %}
+        "
+        href="?q={{ current_q }}&genre={{ genre.pk }}"
+    >
+        {{ genre.name }}
+    </a>
+{% endfor %}
 </div>
 
 <div class="row g-4">
     {% for movie in movies %}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm movie-card">
 
                 {% if movie.poster %}
                     <img
                         src="{{ movie.poster.url }}"
-                        class="card-img-top"
+                        class="card-img-top movie-card-poster"
                         alt="{{ movie.title }}"
-                        style="height: 420px; object-fit: cover;"
+                    >
+                {% else %}
+                    <img
+                        src="{% static 'images/poster-placeholder.png' %}"
+                        class="card-img-top movie-card-poster"
+                        alt="Brak plakatu"
                     >
                 {% endif %}
 
@@ -72,13 +98,13 @@
                         {{ movie.description|truncatewords:25 }}
                     </p>
 
-                    <p class="mt-auto">
-                        ⭐ {{ movie.vote_average }}
-                    </p>
+                    <span class="badge rating-badge align-self-start">
+                        ★ {{ movie.vote_average }}
+                    </span>
 
                     <a
                         href="{% url 'movie-detail' movie.pk %}"
-                        class="btn btn-primary mt-2"
+                        class="btn cinema-btn mt-2"
                     >
                         Szczegóły
                     </a>
