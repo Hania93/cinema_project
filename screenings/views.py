@@ -77,7 +77,13 @@ class ScreeningDetailView(LoginRequiredMixin, DetailView):
         
         seats = self.object.hall.seats.all().order_by("row", "number",)
         
-        reserved_seat_ids = ReservationSeat.objects.filter(reservation__screening=self.object).values_list(
+        reserved_seat_ids = ReservationSeat.objects.filter(
+            reservation__screening=self.object,            
+            reservation__status__in=[
+                "confirmed",
+                "pending"
+            ],
+            ).values_list(
             "seat_id",
             flat=True,
         )
@@ -97,6 +103,10 @@ class ScreeningDetailView(LoginRequiredMixin, DetailView):
         
         already_reserved = ReservationSeat.objects.filter(
             reservation__screening=self.object,
+            reservation__status__in=[
+                "pending",
+                "confirmed"
+            ],
             seat_id__in=selected_seat_ids
         ).exists()
         

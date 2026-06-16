@@ -33,9 +33,21 @@
         Zarezerwowano:
         {{ reservation.created_at|date:"d.m.Y" }}
     </p>
-    <a href="{% url 'reservation-delete' reservation.pk %}">
-        Anuluj rezerwacje
-    </a>
+    <p>
+        Status:
+        {{ reservation.get_status_display }}
+    </p>
+
+    {% if reservation.status != "cancelled" %}
+        <form method="post" action="{% url 'reservation-cancel' reservation.pk %}">
+            {% csrf_token %}
+            <button type="submit">
+                Anuluj rezerwację
+            </button>
+        </form>
+    {% else %}
+        <p>❌ Rezerwacja anulowana</p>   
+    {% endif %}
 </div>
 
 <hr>
