@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.views import View
-from django.views.generic import DeleteView, ListView
+from django.views.generic import ListView
 
 from .models import Reservation
 
@@ -24,28 +24,18 @@ class UserReservationListView(LoginRequiredMixin, ListView):
 
 
 class ReservationCancelView(LoginRequiredMixin, View):
-
     def post(self, request, *args, **kwargs):
         reservation = get_object_or_404(
             Reservation,
-            user = request.user,
+            user=request.user,
             pk=kwargs["pk"],
         )
         if reservation.status == "cancelled":
-            messages.warning(
-                request,
-                "Ta rezerwacja jest już anulowana."
-            )
+            messages.warning(request, "Ta rezerwacja jest już anulowana.")
             return redirect("user-reservations")
 
         reservation.status = "cancelled"
         reservation.save()
-        
-        
-        messages.success(
-            request,
-            "Rezerwacja została anulowana."
-        )
-        return redirect(
-            "user-reservations"
-        )
+
+        messages.success(request, "Rezerwacja została anulowana.")
+        return redirect("user-reservations")

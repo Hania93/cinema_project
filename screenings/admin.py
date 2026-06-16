@@ -24,16 +24,10 @@ class SeatAdmin(admin.ModelAdmin):
 
 @admin.register(Screening)
 class ScreeningAdmin(admin.ModelAdmin):
-    list_display = (
-        "movie",
-        "start_time",
-        "end_time",
-        "hall",
-        "price"
-    )
+    list_display = ("movie", "start_time", "end_time", "hall", "price")
 
     list_filter = ("movie", "start_time", "hall")
-    
+
     list_editable = ["price"]
 
     search_fields = ("movie__title", "hall__name")

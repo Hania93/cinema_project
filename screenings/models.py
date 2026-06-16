@@ -79,22 +79,18 @@ class Screening(models.Model):
         on_delete=models.PROTECT,
         related_name="screenings",
     )
-    
-    price = models.DecimalField(
-        max_digits=6, 
-        decimal_places=2, 
-        default=20.00
-    ) 
+
+    price = models.DecimalField(max_digits=6, decimal_places=2, default=20.00)
 
     def set_end_time(self):
         if self.movie and self.start_time and self.movie.duration:
             self.end_time = self.start_time + timedelta(
-            minutes=self.movie.duration,
+                minutes=self.movie.duration,
             )
 
     def clean(self):
         self.set_end_time()
-        
+
         if self.start_time is None or self.end_time is None:
             raise ValidationError(
                 "Nie można ustalić czasu zakończenia seansu — sprawdź, czy film ma ustawiony czas trwania (duration).",
