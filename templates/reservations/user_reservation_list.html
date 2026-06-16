@@ -27,7 +27,8 @@
 
                         {% for reservation_seat in reservation.reserved_seats.all %}
                             <span class="badge bg-secondary">
-                                {{ reservation_seat.seat.row }}-{{ reservation_seat.seat.number }}
+                                R{{ reservation_seat.seat.row }}
+                                M{{ reservation_seat.seat.number }}
                             </span>
                         {% endfor %}
                     </p>
