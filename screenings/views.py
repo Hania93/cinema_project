@@ -6,6 +6,7 @@ from django.views.generic import DetailView, ListView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
+from collections import defaultdict
 
 from .models import Screening
 from reservations.models import Reservation, ReservationSeat
@@ -80,6 +81,11 @@ class ScreeningDetailView(LoginRequiredMixin, DetailView):
             "number",
         )
 
+        seats_by_row = defaultdict(list)
+
+        for seat in seats:
+            seats_by_row[seat.row].append(seat)
+
         reserved_seat_ids = ReservationSeat.objects.filter(
             reservation__screening=self.object,
             reservation__status__in=["confirmed", "pending"],
@@ -87,8 +93,11 @@ class ScreeningDetailView(LoginRequiredMixin, DetailView):
             "seat_id",
             flat=True,
         )
-        context["seats"] = seats
+
+        context["seats_by_row"] = dict(seats_by_row)
         context["reserved_seat_ids"] = set(reserved_seat_ids)
+        available_seats = seats.count() - len(reserved_seat_ids)
+        context["available_seats"] = available_seats
 
         return context
 

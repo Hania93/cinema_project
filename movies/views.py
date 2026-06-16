@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.views.generic import DetailView, ListView
 
 from .models import Genre, Movie
@@ -36,6 +37,7 @@ class MovieListView(ListView):
         context["query_params"] = self.request.GET.copy()
         context["query_params"].pop("page", None)
 
+        context["current_genre"] = self.request.GET.get("genre", "")
         return context
 
 
@@ -52,7 +54,15 @@ class MovieDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context["cast"] = self.object.movieactor_set.select_related("actor").order_by(
             "billing_order"
         )
+
+        context["screenings"] = (
+            self.object.screenings.select_related("hall")
+            .filter(start_time__gte=timezone.now())
+            .order_by("start_time")
+        )
+
         return context
