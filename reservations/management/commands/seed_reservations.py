@@ -17,13 +17,14 @@ class Command(BaseCommand):
         
         self.stdout.write("Generowanie rezerwacji rozpoczęte...")
         
-        # users = self.create_users(fake)
+        users = self.create_users(fake)
         
-        # self.stdout.write(
-        #     self.style.SUCCESS(
-        #         f"Utworzono {len(users)} użytkowników"
-        #     )
-        # )
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Utworzono {len(users)} użytkowników"
+            )
+        )
+        
         users = list(User.objects.all())
         
         screenings = list(Screening.objects.all().select_related("movie", "hall"))

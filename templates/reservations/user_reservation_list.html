@@ -3,8 +3,9 @@
 
 <h1>Moje rezerwacje</h1>
 
-<div class="row g-4">
-    {% for reservation in reservations %}
+<div class="row g-4 mt-4">
+    <h2 mt-4>Nadchodzące rezerwacje</h2>
+    {% for reservation in upcoming_reservations %}
         <div class="col-md-6">
             <div class="card h-100 shadow-sm">
                 <div class="card-body">
@@ -84,6 +85,83 @@
 <div class="col-12">
             <div class="alert alert-info">
                 Nie masz jeszcze żadnych rezerwacji.
+            </div>
+        </div>
+{% endfor %}
+</div>
+
+<div class="row g-4 mt-4">
+    <h2>Historyczne rezerwacje</h2>
+    {% for reservation in past_reservations %}
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">
+                        <a
+                            href="{% url 'movie-detail' reservation.screening.movie.pk %}"
+                            class="text-decoration-none text-dark"
+                        >
+                            {{ reservation.screening.movie.title }}
+                        </a>
+                    </h4>
+
+                    <p class="text-muted mb-2">
+                        {{ reservation.screening.start_time|date:"d.m.Y" }}
+                        o
+                        {{ reservation.screening.start_time|time:"H:i" }}
+                    </p>
+                    <p>
+                        <strong>Miejsca:</strong>
+
+                        {% for reservation_seat in reservation.reserved_seats.all %}
+                            <span class="badge bg-secondary">
+                                R{{ reservation_seat.seat.row }}
+                                M{{ reservation_seat.seat.number }}
+                            </span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        <span class="badge price-badge">
+                            {{ reservation.total_cost }} zł
+                        </span>
+                    </p>
+                    <p>
+                        Zarezerwowano:
+                        {{ reservation.created_at|date:"d.m.Y" }}
+                    </p>
+                    <p>
+                        Status:
+
+                        {% if reservation.status == "confirmed" %}
+                            <span class="badge bg-success">
+                                {{ reservation.get_status_display }}
+                            </span>
+
+                        {% elif reservation.status == "pending" %}
+                            <span class="badge bg-warning text-dark">
+                                {{ reservation.get_status_display }}
+                            </span>
+
+                        {% elif reservation.status == "cancelled" %}
+                            <span class="badge bg-danger">
+                                {{ reservation.get_status_display }}
+                            </span>
+
+                        {% endif %}
+                    </p>
+
+                    {% if reservation.status == "cancelled" %}
+                        <span class="text-danger">
+                            ❌ Rezerwacja anulowana
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+{% empty %}
+<div class="col-12">
+            <div class="alert alert-info">
+                Brak historii rezerwacji.
             </div>
         </div>
 {% endfor %}
