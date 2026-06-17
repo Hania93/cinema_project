@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
+from django.utils import timezone
+
 from django.views import View
 from django.views.generic import ListView
 
@@ -21,6 +23,26 @@ class UserReservationListView(LoginRequiredMixin, ListView):
             )
             .order_by("-created_at")
         )
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reservations = context["reservations"]
+        
+        context["upcoming_reservations"] = [
+            reservation
+            for reservation in reservations
+            if reservation.screening.start_time >= timezone.now()
+            ]
+        
+        
+        context["past_reservations"] = [
+            reservation
+            for reservation in reservations
+            if reservation.screening.start_time < timezone.now()
+            ]
+        
+        context["now"] = timezone.now()
+        
+        return context
 
 
 class ReservationCancelView(LoginRequiredMixin, View):
