@@ -10,6 +10,7 @@ from collections import defaultdict
 
 from .models import Screening
 from reservations.models import Reservation, ReservationSeat
+from reservations.emails import send_reservation_confirm_email
 
 
 class ScreeningListView(ListView):
@@ -39,7 +40,7 @@ class ScreeningListView(ListView):
         qs = Screening.objects.select_related(
             "movie",
             "hall",
-        ).order_by("start_time")
+        ).filter(start_time__gte=timezone.now()).order_by("start_time")
 
         selected_date = self.get_selected_date()
 
@@ -132,4 +133,5 @@ class ScreeningDetailView(LoginRequiredMixin, DetailView):
             )
 
         messages.success(request, "Rezerwacja została utworzona.")
+        send_reservation_confirm_email(reservation)
         return redirect("screening-detail", pk=self.object.pk)
