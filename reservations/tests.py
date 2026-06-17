@@ -152,7 +152,7 @@ class ReservationModelTests(TestCase):
             password="testpass123",
         )
 
-        response = self.client.post(
+        self.client.post(
             reverse(
                 "reservation-cancel",
                 kwargs={"pk": reservation.pk},
