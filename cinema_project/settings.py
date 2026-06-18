@@ -136,13 +136,37 @@ TMDB_API_TOKEN = env("TMDB_API_TOKEN", default="")
 LOGIN_REDIRECT_URL = "screening-list"
 LOGOUT_REDIRECT_URL = "screening-list"
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_BACKEND = env(
+    "EMAIL_BACKEND",
+    default="django.core.mail.backends.console.EmailBackend",
+)
 
-EMAIL_HOST = env("EMAIL_HOST")
-EMAIL_PORT = env.int("EMAIL_PORT")
-EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS")
+EMAIL_HOST = env(
+    "EMAIL_HOST",
+    default="localhost",
+)
 
-EMAIL_HOST_USER = env("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_PORT = env.int(
+    "EMAIL_PORT",
+    default=25,
+)
 
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
+EMAIL_USE_TLS = env.bool(
+    "EMAIL_USE_TLS",
+    default=False,
+)
+
+EMAIL_HOST_USER = env(
+    "EMAIL_HOST_USER",
+    default="",
+)
+
+EMAIL_HOST_PASSWORD = env(
+    "EMAIL_HOST_PASSWORD",
+    default="",
+)
+
+DEFAULT_FROM_EMAIL = env(
+    "DEFAULT_FROM_EMAIL",
+    default="noreply@example.com",
+)
