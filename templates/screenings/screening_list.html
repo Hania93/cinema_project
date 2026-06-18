@@ -35,19 +35,26 @@
                     
                     <div class="row">
                       <div class="col-4">
-                          {% if screening.movie.poster %}
-                            <img
-                                src="{{ screening.movie.poster.url }}"
-                                class="img-fluid rounded shadow-sm screening-poster"
-                                alt="{{ screening.movie.title }}"
-                            >
-                          {% else %}
-                            <img
-                                src="{% static 'images/poster-placeholder.png' %}"
-                                class="img-fluid rounded shadow-sm screening-poster"
-                                alt="Brak plakatu"
-                            >
-                          {% endif %}
+                          {% if screening.movie.poster_url %}
+                                <img
+                                    src="{{ screening.movie.poster_url }}"
+                                    class="img-fluid rounded shadow-sm screening-poster"
+                                    alt="{{ screening.movie.title }}"
+                                >
+                           {% elif screening.movie.poster %}
+                                <img 
+                                    src="{{ screening.movie.poster.url }}"
+                                    class="img-fluid rounded shadow-sm screening-poster"
+                                    alt="{{ screening.movie.title }}"
+                                >
+                                        
+                            {% else %}
+                                <img
+                                    src="{% static 'images/poster-placeholder.png' %}"
+                                    class="img-fluid rounded shadow-sm screening-poster"
+                                    alt="Brak plakatu"
+                                >
+                            {% endif %}
                       </div>
 
                       <div class="col-8">
