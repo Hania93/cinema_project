@@ -15,6 +15,13 @@
                 class="img-fluid rounded shadow-sm movie-poster"
                 alt="{{ movie.title }}"
             >
+        {% elif movie.poster_url %}
+            <img 
+                src="{{ movie.poster_url }}"
+                class="img-fluid rounded shadow-sm movie-poster"
+                alt="{{ movie.title }}"
+            >
+                    
         {% else %}
             <img
                 src="{% static 'images/poster-placeholder.png' %}"
@@ -22,6 +29,7 @@
                 alt="Brak plakatu"
             >
         {% endif %}
+        
     </div>
 
     <div class="col-md-8">
@@ -55,12 +63,20 @@
         <h5 class="mt-4">Reżyser</h5>
 
         <div class="d-flex align-items-center">
+
             {% if movie.director.photo %}
                 <img
                     src="{{ movie.director.photo.url }}"
                     class="director-photo me-3"
                     alt="{{ movie.director }}"
                 >
+            {% elif movie.director.photo_url %}
+                <img 
+                    src="{{ movie.director.photo_url }}"
+                    class="director-photo me-3"
+                    alt="{{ movie.director }}"
+                >
+                    
             {% else %}
                 <img
                     src="{% static 'images/person-placeholder.jpg' %}"
@@ -92,12 +108,21 @@
     {% for role in cast %}
         <div class="col-sm-6 col-md-4 col-lg-3">
             <div class="card h-100 shadow-sm actor-card">
-                <div class="actor-photo-wrapper">                    {% if role.actor.photo %}
+                <div class="actor-photo-wrapper">     
+
+                    {% if role.actor.photo %}
                         <img
                             src="{{ role.actor.photo.url }}"
                             class="card-img-top actor-photo"
                             alt="{{ role.actor.name }}"
                         >
+                    {% elif role.actor.photo_url %}
+                        <img 
+                            src="{{ role.actor.photo_url }}"
+                            class="card-img-top actor-photo"
+                            alt="{{ role.actor.nme }}"
+                        >
+                            
                     {% else %}
                         <img
                             src="{% static 'images/person-placeholder.jpg' %}"
@@ -105,6 +130,7 @@
                             alt="Brak zdjęcia"
                         >
                     {% endif %}
+
                 </div>
 
                 <div class="card-body">

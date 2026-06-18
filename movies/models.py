@@ -10,6 +10,7 @@ class Director(models.Model):
     )
     name = models.CharField(max_length=120)
     photo = models.ImageField(upload_to="directors/", blank=True, null=True)
+    photo_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -27,6 +28,7 @@ class Actor(models.Model):
     )
     name = models.CharField(max_length=120)
     photo = models.ImageField(upload_to="actors/", blank=True, null=True)
+    photo_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -62,6 +64,8 @@ class Movie(models.Model):
     duration = models.PositiveIntegerField(null=True, blank=True)
     release_date = models.DateField(null=True, blank=True)
     poster = models.ImageField(upload_to="posters/", null=True, blank=True)
+    poster_url = models.URLField(blank=True, null=True)
+
     trailer_url = models.URLField(blank=True, null=True)
     vote_average = models.DecimalField(
         max_digits=3, decimal_places=1, null=True, blank=True

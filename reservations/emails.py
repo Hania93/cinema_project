@@ -3,6 +3,7 @@ from django.core.mail import send_mail
 
 from reservations.models import Reservation
 
+
 def send_reservation_confirm_email(
     reservation: Reservation,
 ) -> None:

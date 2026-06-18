@@ -35,16 +35,16 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(f"Utworzono {len(reservations)} rezerwacji")
         )
-        
+
     def create_users(
-            self,
-            fake: Faker,
-            count: int = 10,
-        ) -> list:
+        self,
+        fake: Faker,
+        count: int = 10,
+    ) -> list:
         """
         Create fake users.
         """
-        
+
         users = []
 
         for _ in range(count):
@@ -65,7 +65,7 @@ class Command(BaseCommand):
             users.append(user)
 
         return users
-    
+
     def create_reservations(
         self,
         users: list,
@@ -75,12 +75,11 @@ class Command(BaseCommand):
         """
         Create fake reservations for screenings.
         """
-        
+
         reservations = []
         statuses = ["confirmed", "confirmed", "confirmed", "pending", "cancelled"]
 
         for _ in range(count):
-
             screening = random.choice(screenings)
             user = random.choice(users)
 
