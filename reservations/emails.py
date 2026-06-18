@@ -1,8 +1,15 @@
 from django.conf import settings
 from django.core.mail import send_mail
 
+from reservations.models import Reservation
 
-def send_reservation_confirm_email(reservation):
+def send_reservation_confirm_email(
+    reservation: Reservation,
+) -> None:
+    """
+    Send reservation confirmation email to the user.
+    """
+
     user = reservation.user
     screening = reservation.screening
 

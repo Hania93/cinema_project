@@ -30,7 +30,10 @@ class Reservation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
-    def total_cost(self):
+    def total_cost(self) -> float:
+        """
+        Calculate total reservation cost.
+        """
         return self.reserved_seats.count() * self.screening.price
 
     class Meta:
