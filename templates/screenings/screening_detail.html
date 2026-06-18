@@ -7,14 +7,28 @@
 </a>
 
 <div class="row g-4 mb-4">
-    <div class="col-md-4">
-        {% if screening.movie.poster %}
+    <div class="col-md-4">        
+        {% if screening.movie.poster_url %}
             <img
-                src="{{ screening.movie.poster.url }}"
-                alt="{{ screening.movie.title }}"
+                src="{{ screening.movie.poster_url }}"
                 class="img-fluid rounded shadow-sm movie-poster"
+                alt="{{ screening.movie.title }}"
+            >
+        {% elif screening.movie.poster %}
+            <img 
+                src="{{ screening.movie.poster.url }}"
+                class="img-fluid rounded shadow-sm movie-poster"
+                alt="{{ screening.movie.title }}"
+            >
+                    
+        {% else %}
+            <img
+                src="{% static 'images/poster-placeholder.png' %}"
+                class="img-fluid rounded shadow-sm movie-poster"
+                alt="Brak plakatu"
             >
         {% endif %}
+
     </div>
 
     <div class="col-md-8">

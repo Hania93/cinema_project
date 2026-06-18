@@ -16,7 +16,7 @@ class Command(BaseCommand):
             return ""
 
         return f"https://image.tmdb.org/t/p/w500{img_path}"
-        
+
     def download_image(
         self,
         img_path,
