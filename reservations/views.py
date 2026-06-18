@@ -23,25 +23,25 @@ class UserReservationListView(LoginRequiredMixin, ListView):
             )
             .order_by("-created_at")
         )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         reservations = context["reservations"]
-        
+
         context["upcoming_reservations"] = [
             reservation
             for reservation in reservations
             if reservation.screening.start_time >= timezone.now()
-            ]
-        
-        
+        ]
+
         context["past_reservations"] = [
             reservation
             for reservation in reservations
             if reservation.screening.start_time < timezone.now()
-            ]
-        
+        ]
+
         context["now"] = timezone.now()
-        
+
         return context
 
 

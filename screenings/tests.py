@@ -5,6 +5,7 @@ from django.utils import timezone
 from movies.models import Director, Movie
 from screenings.models import Hall, Screening
 
+
 class ScreeningModelTests(TestCase):
     def setUp(self):
         self.director = Director.objects.create(
