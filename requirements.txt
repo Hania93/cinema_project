@@ -6,6 +6,7 @@ click==8.4.1
 Django==6.0.6
 django-environ==0.13.0
 Faker==40.23.0
+gunicorn==26.0.0
 idna==3.18
 mypy_extensions==1.1.0
 packaging==26.2
@@ -18,3 +19,4 @@ requests==2.34.2
 ruff==0.15.16
 sqlparse==0.5.5
 urllib3==2.7.0
+whitenoise==6.12.0
