@@ -43,7 +43,15 @@ class Command(BaseCommand):
             )
         )
         
-    def create_users(self, fake, count=10):
+    def create_users(
+            self,
+            fake: Faker,
+            count: int = 10,
+        ) -> list:
+        """
+        Create fake users.
+        """
+            
         users = []
         
         for _ in range(count):        
@@ -65,7 +73,16 @@ class Command(BaseCommand):
         
         return users
     
-    def create_reservations(self, users, screenings, count=20):
+    def create_reservations(
+        self,
+        users: list,
+        screenings: list[Screening],
+        count: int = 20,
+    ) -> list[Reservation]:
+        """
+        Create fake reservations for screenings.
+        """
+        
         reservations = []        
         statuses = ["confirmed", "confirmed", "confirmed", "pending", "cancelled"]        
         
