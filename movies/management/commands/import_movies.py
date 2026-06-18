@@ -1,6 +1,8 @@
 import requests
 
 from django.conf import settings
+
+from django.core.files.base import ContentFile
 from django.core.management.base import BaseCommand
 
 from movies.models import Actor, Director, Genre, Movie, MovieActor
@@ -14,6 +16,34 @@ class Command(BaseCommand):
             return ""
 
         return f"https://image.tmdb.org/t/p/w500{img_path}"
+        
+    def download_image(
+        self,
+        img_path,
+        db_object,
+        field_name,
+    ):
+        img_field = getattr(db_object, field_name)
+
+        if img_path and not img_field:
+            img_url = self.build_tmdb_image_url(img_path)
+
+            try:
+                img_response = requests.get(img_url, timeout=10)
+                img_response.raise_for_status()
+
+                img_field.save(
+                    f"{field_name}_{db_object.tmdb_id or 'unknown'}.jpg",
+                    ContentFile(img_response.content),
+                    save=True,
+                )
+
+            except requests.RequestException as e:
+                self.stdout.write(
+                    self.style.WARNING(
+                        f"Nie udało się pobrać obrazu dla TMDB ID={db_object.tmdb_id}: {e}"
+                    )
+                )
 
     def fetch_movies(self, page, headers):
         try:
@@ -79,6 +109,8 @@ class Command(BaseCommand):
             },
         )
 
+        self.download_image(profile_path, director, "photo")
+
         return director
 
     def get_or_create_genres(self, details):
@@ -129,6 +161,8 @@ class Command(BaseCommand):
 
         movie.genres.set(genres)
 
+        self.download_image(poster_path, movie, "poster")
+
         return movie
 
     def get_or_create_actors(self, details, movie):
@@ -144,6 +178,8 @@ class Command(BaseCommand):
                     "photo_url": self.build_tmdb_image_url(profile_path),
                 },
             )
+
+            self.download_image(profile_path, actor, "photo")
 
             MovieActor.objects.update_or_create(
                 movie=movie,
