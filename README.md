@@ -7,33 +7,30 @@ A web application for browsing movies, viewing screenings and reserving cinema t
 ### Authentication
 
 * User registration
-* User login/logout
+* User login and logout
 * User reservation history
 
 ### Movies
 
-* Browse all movies
+* Browse movies
+* Search movies
+* Filter movies by genre
 * Movie details page
-* Director information
-* Cast information
-* Genre filtering
-* Movie search
+* Director and cast information
 
 ### Screenings
 
 * Daily repertoire
-* Upcoming screenings
 * Screening details
 * Hall information
 
 ### Reservations
 
-* Interactive seat selection
-* Seat availability validation
+* Seat selection
 * Reservation creation
 * Reservation cancellation
 * Reservation history
-* Reservation status management
+* Seat availability validation
 
 ### Email Notifications
 
@@ -43,178 +40,100 @@ A web application for browsing movies, viewing screenings and reserving cinema t
 
 * Import movies from TMDb API
 * Generate fake reservations using Faker
-* Automatically generate future screenings
-
----
 
 ## Technologies
 
-### Backend
-
-* Python 3
+* Python 3.12
 * Django
 * PostgreSQL
-
-### Frontend
-
-* HTML
-* CSS
 * Bootstrap 5
-
-### External Services
-
-* TMDb API
-* Gmail SMTP
-
-### Development Tools
-
-* Faker
-* Ruff
-* Git
 * Docker
-
----
-
-## Project Structure
-
-```text
-cinema_project/
-├── accounts/
-├── movies/
-├── screenings/
-├── reservations/
-├── templates/
-├── static/
-├── media/
-├── manage.py
-└── requirements.txt
-```
-
----
+* TMDb API
+* Faker
 
 ## Installation
 
-### Clone repository
+Clone repository:
 
 ```bash
 git clone <repository-url>
 cd cinema_project
 ```
 
-### Create virtual environment
-
-Linux / macOS:
+Create virtual environment:
 
 ```bash
 python -m venv venv
 source venv/bin/activate
 ```
 
-Windows:
-
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-### Install dependencies
+Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Environment Variables
+Create `.env` file and configure environment variables.
 
-Create a `.env` file in the project root directory.
-
-Example configuration:
-
-```env
-SECRET_KEY=your_secret_key
-
-DEBUG=True
-
-DB_NAME=cinema
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=localhost
-DB_PORT=5432
-
-TMDB_API_TOKEN=your_tmdb_token
-
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USE_TLS=True
-EMAIL_HOST_USER=your_email@gmail.com
-EMAIL_HOST_PASSWORD=your_gmail_app_password
-DEFAULT_FROM_EMAIL=your_email@gmail.com
-```
-
-### Apply migrations
+Run migrations:
 
 ```bash
 python manage.py migrate
 ```
 
-### Create superuser
-
-```bash
-python manage.py createsuperuser
-```
-
-### Run development server
+Run server:
 
 ```bash
 python manage.py runserver
 ```
 
-Application will be available at:
+## Docker
 
-```text
-http://127.0.0.1:8000/
+Build and start containers:
+
+```bash
+docker compose up --build
 ```
 
----
+Run migrations:
+
+```bash
+docker compose exec web python manage.py migrate
+```
+
+Create superuser:
+
+```bash
+docker compose exec web python manage.py createsuperuser
+```
+
+Run tests:
+
+```bash
+docker compose exec web python manage.py test
+```
+
+Stop containers:
+
+```bash
+docker compose down
+```
 
 ## Management Commands
 
-### Import movies from TMDb
+Import movies from TMDb:
 
 ```bash
 python manage.py import_movies
 ```
 
-Imports:
-
-* movies
-* genres
-* directors
-* actors
-* posters
-
-### Generate future screenings
-
-```bash
-python manage.py generate_screenings
-```
-
-Keeps the repertoire available for the next 7 days.
-
-### Generate fake reservations
+Generate fake reservations:
 
 ```bash
 python manage.py seed_reservations
 ```
 
-Generates:
-
-* users
-* reservations
-* reserved seats
-
----
-
-## Running Tests
+## Tests
 
 Run all tests:
 
@@ -222,49 +141,14 @@ Run all tests:
 python manage.py test
 ```
 
-Run tests for a specific application:
-
-```bash
-python manage.py test reservations
-```
-
-```bash
-python manage.py test screenings
-```
-
-```bash
-python manage.py test movies
-```
-
-```bash
-python manage.py test accounts
-```
-
----
-
-## Implemented Tests
-
-* Reservation total cost calculation
-* Reservation seat validation
-* Reservation cancellation
-* User reservations view
-* Screening overlap validation
-* User registration
-* Movie genres relationship
-
----
-
 ## Future Improvements
 
 * Stripe payments
 * Celery + Redis
-* PDF tickets
 * REST API
 * Swagger/OpenAPI documentation
-* Recommendation system
-
----
+* PDF tickets
 
 ## Author
 
-Created as a portfolio project for learning Django, PostgreSQL and web application development.
+Portfolio project created to learn Django, PostgreSQL, Docker and web application development.
