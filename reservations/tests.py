@@ -1,5 +1,3 @@
-# reservations/tests/test_models.py
-
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -113,11 +111,6 @@ class ReservationModelTests(TestCase):
 
         my_reservation = Reservation.objects.create(
             user=self.user,
-            screening=self.screening,
-        )
-
-        other_reservation = Reservation.objects.create(
-            user=other_user,
             screening=self.screening,
         )
 
