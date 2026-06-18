@@ -37,10 +37,14 @@ class ScreeningListView(ListView):
     #     )
 
     def get_queryset(self):
-        qs = Screening.objects.select_related(
-            "movie",
-            "hall",
-        ).filter(start_time__gte=timezone.now()).order_by("start_time")
+        qs = (
+            Screening.objects.select_related(
+                "movie",
+                "hall",
+            )
+            .filter(start_time__gte=timezone.now())
+            .order_by("start_time")
+        )
 
         selected_date = self.get_selected_date()
 
