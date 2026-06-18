@@ -26,6 +26,4 @@ class Command(BaseCommand):
             self.stdout.write("Generating fake reservations...")
             call_command("seed_reservations")
 
-        self.stdout.write(
-            self.style.SUCCESS("Demo data setup completed.")
-        )
+        self.stdout.write(self.style.SUCCESS("Demo data setup completed."))

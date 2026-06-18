@@ -1,42 +1,19 @@
 import requests
 
-from django.core.management.base import BaseCommand
-from django.core.files.base import ContentFile
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
-from movies.models import Movie, Actor, Director, Genre, MovieActor
+from movies.models import Actor, Director, Genre, Movie, MovieActor
 
 
 class Command(BaseCommand):
     help = "Import popular movies from TMDb"
 
-    def download_image(
-        self,
-        img_path,
-        db_object,
-        field_name,
-    ):
-        img_field = getattr(db_object, field_name)
+    def build_tmdb_image_url(self, img_path):
+        if not img_path:
+            return ""
 
-        if img_path and not img_field:
-            img_url = f"https://image.tmdb.org/t/p/w500{img_path}"
-
-            try:
-                img_response = requests.get(img_url, timeout=10)
-                img_response.raise_for_status()
-
-                img_field.save(
-                    f"{field_name}_{db_object.tmdb_id or 'unknown'}.jpg",
-                    ContentFile(img_response.content),
-                    save=True,
-                )
-
-            except requests.RequestException as e:
-                self.stdout.write(
-                    self.style.WARNING(
-                        f"Nie udało się pobrać obrazu dla TMDB ID={db_object.tmdb_id}: {e}"
-                    )
-                )
+        return f"https://image.tmdb.org/t/p/w500{img_path}"
 
     def fetch_movies(self, page, headers):
         try:
@@ -56,7 +33,6 @@ class Command(BaseCommand):
             return []
 
         data = response_movies.json()
-
         return data.get("results", [])
 
     def fetch_movie_details(self, movie_id, headers):
@@ -93,17 +69,20 @@ class Command(BaseCommand):
         if not director_data:
             return None
 
-        director, _ = Director.objects.get_or_create(
-            tmdb_id=director_data["id"], defaults={"name": director_data["name"]}
-        )
+        profile_path = director_data.get("profile_path")
 
-        self.download_image(director_data.get("profile_path"), director, "photo")
+        director, _ = Director.objects.update_or_create(
+            tmdb_id=director_data["id"],
+            defaults={
+                "name": director_data["name"],
+                "photo_url": self.build_tmdb_image_url(profile_path),
+            },
+        )
 
         return director
 
     def get_or_create_genres(self, details):
         genres = []
-
         genres_data = details.get("genres", [])
 
         if not genres_data:
@@ -111,26 +90,28 @@ class Command(BaseCommand):
 
         for genre_item in genres_data:
             genre, _ = Genre.objects.get_or_create(
-                tmdb_id=genre_item["id"], defaults={"name": genre_item["name"]}
+                tmdb_id=genre_item["id"],
+                defaults={
+                    "name": genre_item["name"],
+                },
             )
             genres.append(genre)
 
         return genres
 
     def get_trailer_url(self, details):
-        trailer_url = ""
-
         videos = details.get("videos", {})
         videos_data = videos.get("results", [])
 
         for video in videos_data:
             if video.get("site") == "YouTube" and video.get("type") == "Trailer":
-                trailer_url = f"https://www.youtube.com/watch?v={video['key']}"
-                break
+                return f"https://www.youtube.com/watch?v={video['key']}"
 
-        return trailer_url
+        return ""
 
     def get_or_create_movie(self, details, director, genres, trailer_url):
+        poster_path = details.get("poster_path")
+
         movie, _ = Movie.objects.update_or_create(
             tmdb_id=details["id"],
             defaults={
@@ -142,12 +123,11 @@ class Command(BaseCommand):
                 "vote_count": details.get("vote_count", 0),
                 "trailer_url": trailer_url,
                 "director": director,
+                "poster_url": self.build_tmdb_image_url(poster_path),
             },
         )
 
         movie.genres.set(genres)
-
-        self.download_image(details.get("poster_path"), movie, "poster")
 
         return movie
 
@@ -155,13 +135,15 @@ class Command(BaseCommand):
         credits = details.get("credits", {})
 
         for actor_data in credits.get("cast", [])[:10]:
-            actor, _ = Actor.objects.get_or_create(
+            profile_path = actor_data.get("profile_path")
+
+            actor, _ = Actor.objects.update_or_create(
                 tmdb_id=actor_data["id"],
                 defaults={
                     "name": actor_data["name"],
+                    "photo_url": self.build_tmdb_image_url(profile_path),
                 },
             )
-            self.download_image(actor_data.get("profile_path"), actor, "photo")
 
             MovieActor.objects.update_or_create(
                 movie=movie,
@@ -211,7 +193,10 @@ class Command(BaseCommand):
                 trailer_url = self.get_trailer_url(movie_details)
 
                 movie = self.get_or_create_movie(
-                    movie_details, director, genres, trailer_url
+                    movie_details,
+                    director,
+                    genres,
+                    trailer_url,
                 )
 
                 self.get_or_create_actors(movie_details, movie)
