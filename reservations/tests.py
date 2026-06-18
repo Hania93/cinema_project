@@ -1,5 +1,3 @@
-# reservations/tests/test_models.py
-
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -77,7 +75,7 @@ class ReservationModelTests(TestCase):
             reservation.total_cost,
             50,
         )
-    
+
     def test_cannot_reserve_seat_from_different_hall(self):
         other_hall = Hall.objects.create(
             name="Sala 2",
@@ -103,7 +101,7 @@ class ReservationModelTests(TestCase):
 
         with self.assertRaises(ValidationError):
             reservation_seat.full_clean()
-            
+
     def test_user_reservations_view_shows_only_logged_user_reservations(self):
         other_user = User.objects.create_user(
             username="otheruser",
@@ -116,19 +114,12 @@ class ReservationModelTests(TestCase):
             screening=self.screening,
         )
 
-        other_reservation = Reservation.objects.create(
-            user=other_user,
-            screening=self.screening,
-        )
-
         self.client.login(
             username="testuser",
             password="testpass123",
         )
 
-        response = self.client.get(
-            reverse("user-reservations")
-        )
+        response = self.client.get(reverse("user-reservations"))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(
@@ -139,7 +130,7 @@ class ReservationModelTests(TestCase):
             response,
             other_user.username,
         )
-        
+
     def test_cancel_reservation(self):
         reservation = Reservation.objects.create(
             user=self.user,
