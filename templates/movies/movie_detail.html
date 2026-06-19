@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<a href="{% url 'movie-list' %}" class="btn btn-outline-secondary mb-3">
+    ← Wróć do filmów
+</a>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        {% if movie.poster_url %}
+            <img
+                src="{{ movie.poster_url }}"
+                class="img-fluid rounded shadow-sm movie-poster"
+                alt="{{ movie.title }}"
+            >
+        {% elif movie.poster %}
+            <img 
+                src="{{ movie.poster.url }}"
+                class="img-fluid rounded shadow-sm movie-poster"
+                alt="{{ movie.title }}"
+            >
+                    
+        {% else %}
+            <img
+                src="{% static 'images/poster-placeholder.png' %}"
+                class="img-fluid rounded shadow-sm movie-poster"
+                alt="Brak plakatu"
+            >
+        {% endif %}
+        
+    </div>
+
+    <div class="col-md-8">
+        <h1 class="mb-2">{{ movie.title }}</h1>
+
+        <p class="text-muted">
+            Premiera: {{ movie.release_date|date:"d.m.Y" }} |
+            {{ movie.duration }} min |
+            <span class="badge rating-badge">
+                ★ {{ movie.vote_average }}
+            </span>
+            <small class="text-muted">
+                {{ movie.vote_count }} głosów
+            </small>
+        </p>
+
+        <p class="lead">
+            {{ movie.description }}
+        </p>
+
+        {% if movie.trailer_url %}
+            <a
+                href="{{ movie.trailer_url }}"
+                target="_blank"
+                class="btn trailer-btn mt-2"
+            >
+                ▶ Obejrzyj zwiastun
+            </a>
+        {% endif %}
+
+        <h5 class="mt-4">Reżyser</h5>
+
+        <div class="d-flex align-items-center">
+
+            {% if movie.director.photo_url %}
+                <img
+                    src="{{ movie.director.photo_url }}"
+                    class="director-photo me-3"
+                    alt="{{ movie.director }}"
+                >
+            {% elif movie.director.photo %}
+                <img 
+                    src="{{ movie.director.photo.url }}"
+                    class="director-photo me-3"
+                    alt="{{ movie.director }}"
+                >
+                    
+            {% else %}
+                <img
+                    src="{% static 'images/person-placeholder.jpg' %}"
+                    class="director-photo me-3"
+                    alt="Brak zdjęcia"
+                >
+            {% endif %}
+
+            <h6 class="mb-0">{{ movie.director }}</h6>
+        </div>
+    </div>
+</div>
+
+<h3 class="mt-5 mb-3">Gatunki</h3>
+
+<div class="mb-4">
+    {% for genre in movie.genres.all %}
+        <span class="badge genre-badge">
+            {{ genre.name }}
+        </span>
+    {% empty %}
+        <p>Brak gatunków</p>
+    {% endfor %}
+</div>
+
+<h3 class="mt-5 mb-3">Obsada</h3>
+
+<div class="row g-4 mb-4">
+    {% for role in cast %}
+        <div class="col-sm-6 col-md-4 col-lg-3">
+            <div class="card h-100 shadow-sm actor-card">
+                <div class="actor-photo-wrapper">     
+
+                    {% if role.actor.photo_url %}
+                        <img
+                            src="{{ role.actor.photo_url }}"
+                            class="card-img-top actor-photo"
+                            alt="{{ role.actor.name }}"
+                        >
+                    {% elif role.actor.photo %}
+                        <img 
+                            src="{{ role.actor.photo.url }}"
+                            class="card-img-top actor-photo"
+                            alt="{{ role.actor.nme }}"
+                        >
+                            
+                    {% else %}
+                        <img
+                            src="{% static 'images/person-placeholder.jpg' %}"
+                            class="card-img-top actor-photo"
+                            alt="Brak zdjęcia"
+                        >
+                    {% endif %}
+
+                </div>
+
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ role.actor.name }}
+                    </h5>
+
+                    <p class="card-text small text-muted">
+                        {{ role.role_name }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>Brak obsady</p>
+    {% endfor %}
+</div>
+
+<h3 class="mt-5 mb-3">Najbliższe seanse</h3>
+
+<div class="row g-3">
+    {% for screening in screenings %}
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ screening.start_time|date:"d.m.Y" }}
+                    </h5>
+
+                    <p class="fs-5 fw-bold">
+                        {{ screening.start_time|time:"H:i" }}
+                    </p>
+
+                    <p class="card-text">
+                        Sala: {{ screening.hall.name }}
+                    </p>
+
+                    <p class="card-text">
+                        Cena: {{ screening.price }} zł
+                    </p>
+
+                    <a
+                        href="{% url 'screening-detail' screening.pk %}"
+                        class="btn cinema-btn"
+                    >
+                        Wybierz miejsca
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                Brak zaplanowanych seansów.
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

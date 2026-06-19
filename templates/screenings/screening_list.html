@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Repertuar</h1>
+</div>
+
+  <div class="mb-4">
+    {% for date in dates %}
+        <a
+            href="?date={{ date|date:'Y-m-d' }}"
+            class="btn mb-2
+                {% if current_date == date|date:'Y-m-d' %}
+                    cinema-btn
+                {% else %}
+                    btn-outline-secondary
+                {% endif %}
+            "
+        >
+            {{ date|date:"d.m" }}
+        </a>
+    {% endfor %}
+  </div>
+
+  <div class="row g-4">
+
+    {% for screening in screenings %}
+
+        <div class="col-md-6">
+
+            <div class="card h-100 shadow-sm screening-card">
+
+                <div class="card-body">
+                    
+                    <div class="row">
+                      <div class="col-4">
+                          {% if screening.movie.poster_url %}
+                                <img
+                                    src="{{ screening.movie.poster_url }}"
+                                    class="img-fluid rounded shadow-sm screening-poster"
+                                    alt="{{ screening.movie.title }}"
+                                >
+                           {% elif screening.movie.poster %}
+                                <img 
+                                    src="{{ screening.movie.poster.url }}"
+                                    class="img-fluid rounded shadow-sm screening-poster"
+                                    alt="{{ screening.movie.title }}"
+                                >
+                                        
+                            {% else %}
+                                <img
+                                    src="{% static 'images/poster-placeholder.png' %}"
+                                    class="img-fluid rounded shadow-sm screening-poster"
+                                    alt="Brak plakatu"
+                                >
+                            {% endif %}
+                      </div>
+
+                      <div class="col-8">
+
+                        <p class="fs-3 fw-bold mb-1">
+                            {{ screening.start_time|time:"H:i" }}
+                        </p>
+
+                        <h5 class="mb-2">
+                            <a
+                                href="{% url 'movie-detail' screening.movie.pk %}"
+                                class="text-decoration-none text-dark"
+                            >
+                                {{ screening.movie.title }}
+                            </a>
+                        </h5>
+
+                        <span class="badge bg-secondary">
+                            Sala {{ screening.hall.name }}
+                        </span>
+
+                        <p class="mt-2 mb-0">
+                            Cena: <strong>{{ screening.price }} zł</strong>
+                        </p>
+
+                        <a
+                            href="{% url 'screening-detail' screening.pk %}"
+                            class="btn cinema-btn mt-3"
+                        >
+                            Wybierz miejsca
+                        </a>
+
+                    </div>
+                    </div>                   
+                </div>
+            </div>
+        </div>
+
+    {% empty %}
+
+        <div class="col-12">
+            <div class="alert alert-info">
+                Brak seansów w wybranym dniu.
+            </div>
+        </div>
+
+    {% endfor %}
+
+  </div>
+
+  
+{% endblock %}
