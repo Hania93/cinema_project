@@ -9,8 +9,16 @@
 </div>
 
 <form method="get" class="row g-2 mb-4">
+    {% if current_genre %}
+        <input
+            type="hidden"
+            name="genre"
+            value="{{ current_genre }}"
+            class="form-control"
+        >
+    {% endif %}
 
-    <div class="col-md-8">
+    <div class="col-md-5">
         <input
             type="text"
             name="q"
@@ -19,8 +27,40 @@
             placeholder="Szukaj filmu..."
         >
     </div>
-
     <div class="col-md-4">
+        <select 
+        name="sort" 
+        class="form-select" 
+        onchange="this.form.submit()"
+        >
+            <option value="" 
+            {% if not sort %}selected{% endif%}>
+                Domyślnie: alfabetycznie
+            </option>
+
+            <option value="rating_desc" 
+            {% if sort == "rating_desc" %}selected{% endif %}>
+                Ocena: od najwyższej
+            </option>
+
+            <option value="rating_asc" 
+            {% if sort == 'rating_asc' %}selected{% endif %}>
+                Ocena: od najniższej
+            </option>
+
+            <option value="release_desc" 
+            {% if sort == 'release_desc' %}selected{% endif %}>
+                Rok premiery: najnowsze
+            </option>
+
+            <option value="release_asc"
+            {% if sort == 'release_asc' %}selected{% endif %}>
+                Rok premiery: najstarsze
+            </option>
+        </select>
+    </div>
+
+    <div class="col-md-3">
         <button
             type="submit"
             class="btn cinema-btn w-100"
@@ -28,6 +68,7 @@
             Szukaj
         </button>
     </div>
+    
 
 </form>
 
@@ -54,7 +95,7 @@
                 genre-movies-badge
             {% endif %}
         "
-        href="?q={{ current_q }}&genre={{ genre.pk }}"
+        href="?q={{ current_q }}&genre={{ genre.pk }}&sort={{ sort }}"
     >
         {{ genre.name }}
     </a>

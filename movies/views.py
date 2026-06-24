@@ -20,10 +20,26 @@ class MovieListView(ListView):
         if genre_id:
             qs = qs.filter(genres__id=genre_id)
 
-        q = self.request.GET.get("q")
+        q = self.request.GET.get("q", '')
+        sort = self.request.GET.get("sort", '')
 
         if q:
             qs = qs.filter(title__icontains=q)
+            
+        if sort == 'rating_asc':
+            qs = qs.order_by('vote_average')
+            
+        elif sort == 'rating_desc':
+            qs = qs.order_by('-vote_average')
+            
+        elif sort == 'release_asc':
+            qs = qs.order_by('release_date')
+            
+        elif sort == 'release_desc':
+            qs = qs.order_by('-release_date')
+            
+        else:
+            qs = qs.order_by('title')        
 
         return qs.distinct()
 
@@ -33,6 +49,8 @@ class MovieListView(ListView):
         context["genres"] = Genre.objects.all()
 
         context["current_q"] = self.request.GET.get("q", "")
+        
+        context["sort"] = self.request.GET.get("sort", "")
 
         context["query_params"] = self.request.GET.copy()
         context["query_params"].pop("page", None)
